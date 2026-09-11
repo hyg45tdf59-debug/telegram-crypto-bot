@@ -1,0 +1,41 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run secret detection
+npm run lint:secrets
+
+# Check for common secret patterns in staged files
+echo "🔍 Checking for common secret patterns..."
+SECRETS_FOUND=0
+
+# Patterns to check
+if git diff --cached | grep -i "private.*key\|api.*key\|secret\|token\|password" | grep -v "\.example\|SECURITY.md\|\.md$" > /dev/null; then
+  echo "⚠️  WARNING: Potential secrets detected in staged changes"
+  echo "Please review before committing:"
+  git diff --cached | grep -i "private.*key\|api.*key\|secret\|token\|password" | head -5
+  SECRETS_FOUND=1
+fi
+
+# Check for .env file (should never be committed)
+if git diff --cached --name-only | grep -E "^\.env($|\.)" | grep -v "\.example$" > /dev/null; then
+  echo "❌ ERROR: .env files should not be committed!"
+  echo "These files contain secrets and must be git-ignored"
+  exit 1
+fi
+
+# Check for common private key file extensions
+if git diff --cached --name-only | grep -E "\.(pem|key|keystore|wallet)$" > /dev/null; then
+  echo "❌ ERROR: Private key files should not be committed!"
+  git diff --cached --name-only | grep -E "\.(pem|key|keystore|wallet)$"
+  exit 1
+fi
+
+if [ $SECRETS_FOUND -eq 1 ]; then
+  echo ""
+  echo "If these are false positives, you can bypass with: git commit --no-verify"
+  echo "But please review carefully first!"
+  exit 1
+fi
+
+echo "✅ Secret check passed!"
+exit 0
