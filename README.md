@@ -49,9 +49,11 @@ crypto-trade-bot/
 ├── pages/              # App pages (Market, Portfolio, Trading, Settings)
 ├── composables/        # Vue composables (Telegram, Crypto API)
 ├── components/         # Reusable Vue components
+├── utils/              # Utility functions (validation, sanitization)
 ├── assets/css/         # Global styles
 ├── app.vue             # Root component
 ├── nuxt.config.ts      # Nuxt configuration
+├── SECURITY.md         # Security guidelines (IMPORTANT)
 └── README.md           # Documentation
 ```
 
@@ -64,12 +66,14 @@ crypto-trade-bot/
 
 ## 🔑 Environment Variables
 
-Create a `.env.local` file:
+Create a `.env.local` file (use `.env.example` as a template):
 
 ```env
 VITE_TELEGRAM_BOT_TOKEN=your_bot_token
 VITE_CRYPTO_API_KEY=your_api_key
 ```
+
+**⚠️ IMPORTANT:** Never commit `.env.local` or any files containing secrets. See [SECURITY.md](./SECURITY.md) for detailed guidelines.
 
 ## 📚 Tech Stack
 
@@ -78,6 +82,7 @@ VITE_CRYPTO_API_KEY=your_api_key
 - **Styling**: Tailwind CSS
 - **Mobile**: Telegram Web App SDK
 - **APIs**: CoinGecko (free cryptocurrency data)
+- **Security**: DOMPurify for input sanitization, Zod for validation
 
 ## 🎮 Features in Detail
 
@@ -130,6 +135,18 @@ The bot uses **CoinGecko API** (free, no key required) for cryptocurrency data:
 - **Dark theme** optimized for Telegram
 - **Safe area support** for notched phones
 
+## 🔐 Security
+
+This project prioritizes security, especially for handling cryptocurrency and sensitive user data:
+
+- ✅ **Input Validation & Sanitization** - All user inputs are validated and sanitized
+- ✅ **Secure Headers** - Content Security Policy and security headers configured
+- ✅ **Secret Detection** - Pre-commit hooks prevent accidental secret commits
+- ✅ **Environment Variables** - Secrets stored in `.env.local` (git-ignored)
+- ✅ **XSS Protection** - DOMPurify sanitizes all HTML content
+
+**⚠️ Read [SECURITY.md](./SECURITY.md) before handling any sensitive data or deploying to production!**
+
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -167,6 +184,8 @@ MIT © 2024
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+**Before contributing, please read [SECURITY.md](./SECURITY.md) to ensure compliance with security guidelines.**
+
 ## 📞 Support
 
 For support, open an issue on GitHub or contact us via Telegram.
@@ -184,3 +203,5 @@ For support, open an issue on GitHub or contact us via Telegram.
 ---
 
 **Made with ❤️ for crypto traders**
+
+**Remember: Always prioritize security! See [SECURITY.md](./SECURITY.md) for detailed guidelines.**
